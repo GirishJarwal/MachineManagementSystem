@@ -3,8 +3,10 @@ import { Register, Login, Auth } from '../controller/userController.js'
 const router = express.Router()
 import { body } from 'express-validator'
 import { VerifyUser } from '../middleware/VerifyUser.js'
+import { createMachine } from '../controller/machineController.js'
 
 
+// USER ROUTES
 router.post('/register',[
     body('name').trim().notEmpty().withMessage("Name is Required"),
     body('email').trim().notEmpty().withMessage("Email ID is Required")
@@ -21,5 +23,9 @@ router.post('/login',[
 ], Login )
 
 router.get('/verify', VerifyUser,Auth )
+
+// MACHINE ROUTES
+
+router.post('/add-machine', VerifyUser, createMachine)
 
 export { router as Router };
