@@ -3,24 +3,24 @@ import mongoose, { model } from "mongoose";
 const MachineSchema = new mongoose.Schema({
     name: {
         type: String,
-        require: true,
+        required: true,
         unique: true
     },
     customer: {
         type: String,
-        require: true,
+        required: true,
     },
     city: {
         type: String,
-        require: true
+        required: true
     },
     model:{
         type: String,
-        require: true
+        required: true
     },
     ccnstatus:{
         type: String,
-        require: true
+        required: true
     },
     iolist:{
         type: String,

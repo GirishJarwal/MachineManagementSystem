@@ -68,4 +68,13 @@ const createMachine = async (req,res) => {
 }
 };
 
-export {createMachine}
+const getMachines = async (req,res) => {
+    try{
+        const machines = await MachineModel.find({})
+        return res.status(200).json({success: true, machines})
+    } catch (err){
+        return res.status(500).json({error: err.message})
+    }
+}
+
+export {createMachine, getMachines}

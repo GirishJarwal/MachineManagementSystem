@@ -3,7 +3,7 @@ import { Register, Login, Auth } from '../controller/userController.js'
 const router = express.Router()
 import { body } from 'express-validator'
 import { VerifyUser } from '../middleware/VerifyUser.js'
-import { createMachine } from '../controller/machineController.js'
+import { createMachine, getMachines } from '../controller/machineController.js'
 
 
 // USER ROUTES
@@ -27,5 +27,6 @@ router.get('/verify', VerifyUser,Auth )
 // MACHINE ROUTES
 
 router.post('/add-machine', VerifyUser, createMachine)
+router.get('/machines', VerifyUser, getMachines)
 
 export { router as Router };
