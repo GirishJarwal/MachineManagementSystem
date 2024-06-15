@@ -90,4 +90,17 @@ const getMachine = async (req,res) => {
     }
 }
 
-export {createMachine, getMachines, getMachine}
+const updateMachine = async (req,res) => {
+    const {id} = req.params;
+    if (!id) {
+        return res.status(401).json({error: "No Id Specified"})
+    }
+    try{
+        const result = await MachineModel.findByIdAndUpdate({_id: id}, {...req.body}, {new: true})
+        return res.status(200).json({success: true, ...result._doc})
+    } catch (err){
+        return res.status(500).json({error: err.message})
+    }
+}
+
+export {createMachine, getMachines, getMachine, updateMachine}
