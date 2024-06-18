@@ -103,4 +103,22 @@ const updateMachine = async (req,res) => {
     }
 }
 
-export {createMachine, getMachines, getMachine, updateMachine}
+const deleteMachine = async (req,res) => {
+    const {id} = req.params;
+    if (!id) {
+        return res.status(401).json({error: "No Id Specified"})
+    }
+    try{
+        const machine = await MachineModel.findOne({_id: id})
+        if(!machine){
+            return res.status(401).json({error: "No Record Exists"})
+        }
+        const deleteRecord = await MachineModel.findByIdAndDelete({_id: id})
+        const machines = await MachineModel.find({})
+        return res.status(200).json({success: true, machines})
+    } catch (err){
+        return res.status(500).json({error: err.message})
+    }
+}
+
+export {createMachine, getMachines, getMachine, updateMachine, deleteMachine}
