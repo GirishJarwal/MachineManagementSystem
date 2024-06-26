@@ -13,8 +13,14 @@ const createMachine = async (req,res) => {
         dispatchdate, dispatchmonth, installation, updatemachine,
         docrelatedcomplaints, logicrelatedcomplaints, details
     } = req.body;
-    
+
+    const existingMachine = await MachineModel.findOne({ name });
+
     try{
+    if (existingMachine) {
+      return res.status(400).json({ success: false, message: 'CCN already exists. Please enter a unique CCN.' });
+    }
+    
     const newMachine = new MachineModel({
         name, //ccn
         customer,
