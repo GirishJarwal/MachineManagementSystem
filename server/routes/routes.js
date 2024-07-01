@@ -3,7 +3,7 @@ import { Register, Login, Auth } from '../controller/userController.js'
 const router = express.Router()
 import { body } from 'express-validator'
 import { VerifyUser } from '../middleware/VerifyUser.js'
-import { createMachine, getMachines, getMachine, updateMachine, deleteMachine } from '../controller/machineController.js'
+import { createMachine, getMachines, getMachine, updateMachine, deleteMachine, searchMachines } from '../controller/machineController.js'
 
 
 // USER ROUTES
@@ -31,5 +31,6 @@ router.get('/machines', VerifyUser, getMachines)
 router.get('/machine/:id', VerifyUser, getMachine)
 router.put('/update-machine/:id', VerifyUser, updateMachine)
 router.delete('/machine/:id', VerifyUser, deleteMachine)
+router.get('/search', VerifyUser,searchMachines); // New search route
 
 export { router as Router };

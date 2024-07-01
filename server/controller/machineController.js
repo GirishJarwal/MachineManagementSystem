@@ -127,4 +127,19 @@ const deleteMachine = async (req,res) => {
     }
 }
 
-export {createMachine, getMachines, getMachine, updateMachine, deleteMachine}
+const searchMachines = async (req, res) => {
+    const searchTerm = req.query.searchTerm;
+    try {
+      const machines = await MachineModel.find({ name: { $regex: searchTerm, $options: 'i' } });
+      if(machines.length>0)
+      return res.status(200).json({success: true, machines});
+      else{
+        return res.status(200).json({success:false, message: 'No machine found' });
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: 'Error occurred while searching machines' });
+    }
+  };
+
+export {createMachine, getMachines, getMachine, updateMachine, deleteMachine, searchMachines}
