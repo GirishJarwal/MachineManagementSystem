@@ -4,6 +4,7 @@ import { validationResult } from 'express-validator'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
+import { AdminModel } from '../models/Admin.js'
 dotenv.config({path:"../config/.env"})
 
 const Register = async (req, res) => {
@@ -58,10 +59,59 @@ const Login = async (req, res) => {
         return res.status(500).json({error: err.message})
     }
 };
+const AdminLogin = async (req, res) => {
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
+    const{email, password} = req.body;
+    try{
+        const userExist = await AdminModel.findOne({email})
+        if(!userExist){
+            return res.status(400).json({
+                errors: [{msg: "User Not Registered"}],
+            });
+        }
+        const isPasswordOk = await bcrypt.compare(password, userExist.password)
+        if(!isPasswordOk){
+            return res.status(400).json({
+                errors: [{msg: 'Incorrect Password'}],
+            });
+        }
+        const token = jwt.sign({_id: userExist._id}, process.env.JWT_SECRET_KEY, {expiresIn: "3d"})
+    
+        const user = {...userExist._doc, password: undefined}
+        return res.status(201).json({success:true, user, token})
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({error: err.message})
+    }
+};
+const Admin = async (req, res) => {
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
+    const{name, email, password} = req.body;
+    try{
+        const userExist = await AdminModel.findOne({email})
+        if(userExist){
+            return res.status(400).json({
+                errors: [{msg: 'User already existing'}]
+            });
+        }
+        const hashPassword = await bcrypt.hash(password, 12)
+        const newAdmin = new AdminModel ({name, email, password: hashPassword})
+        const result = await newAdmin.save()
+        result._doc.password = undefined;
+        return res.status(201).json({success:true, ...result._doc})
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({error: err.message})
+    }
+};
 
 const Auth = (req,res) => {
     return res.status(200).json({success: true, user:{ ...req.user._doc}})
 }
-
-
-export {Register, Login, Auth};
+export {Register, Login, AdminLogin, Admin ,Auth};

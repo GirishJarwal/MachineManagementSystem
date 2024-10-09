@@ -96,18 +96,40 @@ const getMachine = async (req,res) => {
     }
 }
 
-const updateMachine = async (req,res) => {
-    const {id} = req.params;
+// const updateMachine = async (req,res) => {
+//     const {id} = req.params;
+//     if (!id) {
+//         return res.status(401).json({error: "No Id Specified"})
+//     }
+//     try{
+//         const result = await MachineModel.findByIdAndUpdate(id, { ...req.body, lastEdited: Date.now() }, { new: true }) //({_id: id}, {...req.body}, {new: true})
+//         return res.status(200).json({success: true, ...result._doc})
+//     } catch (err){
+//         return res.status(500).json({error: err.message})
+//     }
+// }
+const updateMachine = async (req, res) => {
+    const { id } = req.params;
     if (!id) {
-        return res.status(401).json({error: "No Id Specified"})
+        return res.status(401).json({ error: "No Id Specified" });
     }
-    try{
-        const result = await MachineModel.findByIdAndUpdate({_id: id}, {...req.body}, {new: true})
-        return res.status(200).json({success: true, ...result._doc})
-    } catch (err){
-        return res.status(500).json({error: err.message})
+    try {
+        const result = await MachineModel.findByIdAndUpdate(
+            id,
+            { ...req.body, lastEdited: Date.now() },
+            { new: true }
+        );
+
+        if (!result) {
+            return res.status(404).json({ error: "Machine not found" });
+        }
+
+        return res.status(200).json({ success: true, machine: result });
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
     }
-}
+};
+
 
 const deleteMachine = async (req,res) => {
     const {id} = req.params;

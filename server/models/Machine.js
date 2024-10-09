@@ -135,7 +135,11 @@ const MachineSchema = new mongoose.Schema({
     },
     details:{
         type: String,
-    }
+    },
+    lastEdited: {               // Timestamp for last edit
+        type: Date,
+        default: Date.now
+    } 
 })
 
 const MachineModel = mongoose.model("machine", MachineSchema)
